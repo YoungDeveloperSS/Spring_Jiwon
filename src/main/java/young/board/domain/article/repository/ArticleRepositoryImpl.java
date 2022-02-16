@@ -12,12 +12,13 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     @Override
     public Article findByArticleId(Long article_id) {
-        return em.find(Article.class,article_id);
+        return em.createQuery("select a from Article a where a.isNotUsing=false and a.id=:article_id", Article.class)
+                .setParameter("article_id",article_id).getSingleResult(); //TODO : 조회 시 결과가 없을 때 처리 필요
     }
 
     @Override
     public List<Article> findArticleAll() {
-        return em.createQuery("select a from Article a", Article.class)
+        return em.createQuery("select a from Article a where a.isNotUsing=false", Article.class)
                 .getResultList();
     }
 

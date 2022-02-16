@@ -1,6 +1,7 @@
 package young.board.domain.article;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import young.board.domain.article.ArticleCategory;
@@ -28,14 +29,36 @@ public class Article {
     @Enumerated(EnumType.STRING)
     private ArticleCategory category;
 
-    private boolean isUsing;
+    private boolean isNotUsing;
 
-    public static Article createArticle(String title, String content, String nickname, String date){
-        Article article = new Article();
-        article.title = title;
-        article.content = content;
-        article.nickname = nickname;
-        article.date = date;
-        return article;
+    @Builder
+    private Article(Long id, String title, String content, String nickname, String date, ArticleCategory category, boolean isNotUsing) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.nickname = nickname;
+        this.date = date;
+        this.category = category;
+        this.isNotUsing = isNotUsing;
+    }
+
+    public static Article of(String title, String content, String nickname, String date){
+        return Article.builder()
+                .title(title)
+                .content(content)
+                .nickname(nickname)
+                .date(date)
+                .build();
+    }
+
+    public void setArticle(String title, String content, String nickname, String date){
+        this.title = title;
+        this.content = content;
+        this.nickname = nickname;
+        this.date = date;
+    }
+
+    public void unSetIsUsing(){
+        this.isNotUsing = true;
     }
 }
