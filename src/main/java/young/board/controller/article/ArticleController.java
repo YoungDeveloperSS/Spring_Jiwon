@@ -60,4 +60,21 @@ public class ArticleController {
         return ApiResponse.success(articleService.searchAllArticles());
     }
 
+    /**
+     * 추천
+     */
+    @PostMapping("/recommendation/set")
+    public ApiResponse<String> setRecommendation(@RequestParam Long article_id, @RequestParam Long user_id){
+        articleService.setRecommendation(article_id,user_id);
+        return ApiResponse.success("추천이 완료되었습니다.");
+    }
+
+    /**
+     * 추천 취소
+     */
+    @PostMapping("/recommendation/unSet")
+    public ApiResponse<String> unsetRecommendation(@RequestParam Long article_id, @RequestParam Long user_id) {
+        articleService.unsetRecommendation(article_id, user_id);
+        return ApiResponse.success("추천이 취소되었습니다.");
+    }
 }
