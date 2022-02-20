@@ -1,21 +1,27 @@
 package young.board.domain.article.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import young.board.domain.article.Article;
 import young.board.domain.article.ArticleRecommendation;
+import young.board.domain.article.QArticleRecommendation;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static young.board.domain.article.QArticleRecommendation.*;
+
 @RequiredArgsConstructor
 public class ArticleRecommendationRepositoryImpl implements ArticleRecommendationRepositoryCustom{
     private final EntityManager em;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public ArticleRecommendation findByArticleIdAndUserId(Long article_id, Long user_id) {
-        return em.createQuery("select a from ArticleRecommendation a where a.article.id=:article_id and a.user.id=:user_id", ArticleRecommendation.class)
-                .setParameter("article_id",article_id)
-                .setParameter("user_id",user_id)
-                .getSingleResult(); //TODO : 조회 시 결과가 없을 때 처리 필요
+        return queryFactory
+                .selectFrom(articleRecommendation)
+                .where(articleRecommendation.id.eq(article_id),
+                        articleRecommendation.user.id.eq(user_id))
+                .fetchOne();
     }
 }

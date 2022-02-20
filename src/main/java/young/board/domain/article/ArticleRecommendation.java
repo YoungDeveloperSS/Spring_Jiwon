@@ -41,11 +41,13 @@ public class ArticleRecommendation {
                 .user(user)
                 .isUsing(true)
                 .build();
+
     }
 
     public void setRecommendation(){
         this.isUsing = true;
     }
+
     public void unsetRecommendation(){
         this.isUsing = false;
     }
