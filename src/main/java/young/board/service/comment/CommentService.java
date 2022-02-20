@@ -12,6 +12,8 @@ import young.board.domain.user.UserRepository;
 import young.board.service.comment.dto.request.CommentEditRequest;
 import young.board.service.comment.dto.request.CommentRequest;
 import young.board.service.comment.dto.response.CommentResponse;
+import young.board.service.comment.dto.response.CommentsScrollResponse;
+import young.board.util.common.ScrollPaginationCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,13 @@ public class CommentService {
             commentResponses.add(CommentResponse.of(comment));
         }
         return  commentResponses;
+    }
+
+    @Transactional(readOnly = true)
+    public CommentsScrollResponse searchAllCommentsByArticleIdScroll(Long article_id, Long cursor, int size){
+        List<Comment> commentsWithNextCursor = commentRepository.findAllByArticleIdScroll(article_id,cursor,size+1);
+        ScrollPaginationCollection<Comment> commentsScroll = ScrollPaginationCollection.of(commentsWithNextCursor,size);
+        return CommentsScrollResponse.of(commentsScroll, commentRepository.findCountsByArticleId(article_id));
     }
 
     @Transactional
