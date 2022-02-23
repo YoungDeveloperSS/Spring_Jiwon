@@ -30,7 +30,7 @@ public class ArticleService {
 
     @Transactional(readOnly = true)
     public ArticleResponse searchArticleById(Long article_id){
-        Article article = articleRepository.findByArticleId(article_id);
+        Article article = articleRepository.findByArticleId(article_id); //optional로 해야 NULl 에러 막을 수 있음 -> 고쳐보기
         if(article == null){
             throw new IllegalStateException("게시글이 존재하지 않습니다.");
         }
@@ -48,11 +48,11 @@ public class ArticleService {
     }
 
     @Transactional
-    public Long postArticle(ArticleRequest articleRequest) throws IOException {
+    public Long postArticle(ArticleRequest articleRequest, MultipartFile multipartFile) throws IOException {
         String imageUrl = "";
-        if(!articleRequest.getMultipartFile().isEmpty()){
+        if(!multipartFile.isEmpty()){
             //S3 이미지 넣기
-            imageUrl = s3FileUpload.upload(articleRequest.getMultipartFile());
+            imageUrl = s3FileUpload.upload(multipartFile);
         }
 
         Article article = Article.of(articleRequest.getTitle(), articleRequest.getContent(), articleRequest.getNickname(), articleRequest.getDate(), imageUrl);

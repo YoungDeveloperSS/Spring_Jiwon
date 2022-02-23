@@ -24,12 +24,11 @@ public class ArticleController {
      */
     @PostMapping("/post")
     public ApiResponse<String> postArticle(@RequestPart MultipartFile multipartFile,
-                                           @RequestParam String content, @RequestParam String date,
-                                           @RequestParam String nickname, @RequestParam String title) throws IOException {
-
-        articleService.postArticle(new ArticleRequest(title,content,nickname,date,multipartFile));
+                                           @ModelAttribute ArticleRequest articleRequest) throws IOException {
+        articleService.postArticle(articleRequest,multipartFile);
         return ApiResponse.success("게시글이 저장되었습니다.");
     }
+
 
     @PostMapping("/post/image")
     public ApiResponse<String> postImageArticle(@RequestPart MultipartFile multipartFile) throws IOException {
