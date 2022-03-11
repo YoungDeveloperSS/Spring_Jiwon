@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ArticleResponse {
+
+    private Long id;//TODO : 필수
+
     private String title;
 
     private String content;
