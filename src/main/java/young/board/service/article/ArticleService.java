@@ -3,6 +3,7 @@ package young.board.service.article;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import young.board.domain.article.Article;
 import young.board.domain.article.ArticleRecommendation;
 import young.board.domain.article.ArticleRecommendationRepository;
@@ -13,7 +14,9 @@ import young.board.domain.user.UserRepository;
 import young.board.service.article.dto.request.ArticleEditRequest;
 import young.board.service.article.dto.request.ArticleRequest;
 import young.board.service.article.dto.response.ArticleResponse;
+import young.board.util.common.S3FileUpload;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +26,11 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
     private final ArticleRecommendationRepository articleRecommendationRepository;
+    private final S3FileUpload s3FileUpload;
 
     @Transactional(readOnly = true)
     public ArticleResponse searchArticleById(Long article_id){
-        Article article = articleRepository.findByArticleId(article_id);
+        Article article = articleRepository.findByArticleId(article_id); //optional로 해야 NULl 에러 막을 수 있음 -> 고쳐보기
         if(article == null){
             throw new IllegalStateException("게시글이 존재하지 않습니다.");
         }
@@ -44,10 +48,27 @@ public class ArticleService {
     }
 
     @Transactional
-    public Long postArticle(ArticleRequest articleRequest){
-        Article article = Article.of(articleRequest.getTitle(), articleRequest.getContent(), articleRequest.getNickname(), articleRequest.getDate());
+    public Long postArticle(ArticleRequest articleRequest, MultipartFile multipartFile) throws IOException {
+        String imageUrl = "";
+        if(!multipartFile.isEmpty()){
+            //S3 이미지 넣기
+            imageUrl = s3FileUpload.upload(multipartFile);
+        }
+
+        Article article = Article.of(articleRequest.getTitle(), articleRequest.getContent(), articleRequest.getNickname(), articleRequest.getDate(), imageUrl);
         articleRepository.save(article);
         return article.getId();
+    }
+
+    @Transactional
+    public Long postImageArticle(MultipartFile multipartFile) throws IOException {
+        String imageUrl = "";
+        if(!multipartFile.isEmpty()){
+            //S3 이미지 넣기
+            imageUrl = s3FileUpload.upload(multipartFile);
+        }
+        System.out.println("==="+imageUrl);
+        return 1l;
     }
 
     @Transactional
