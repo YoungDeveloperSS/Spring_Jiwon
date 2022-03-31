@@ -60,6 +60,13 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+
+	//redis
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.6.3'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	//implementation group: 'redis.clients', name: 'jedis', version: '4.1.1'
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+
 }
 
 tasks.named('test') {
